@@ -29,6 +29,7 @@ override.tf.json
 # example: *tfplan*
 
 #VSCode
+.vs/*
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
