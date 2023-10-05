@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Git Checkout') {
             steps {
-                git branch: 'main', credentialsId: '1af469b8-2c75-4ca8-a80a-80f7488cf32a', url: 'https://github.com/mrparticle/Breadcrumbsnibr-bot13-rds-audit-logging.git'  //TFT REPO
+                git branch: 'main', credentialsId: '1af469b8-2c75-4ca8-a80a-80f7488cf32a', url: 'https://github.com/mrparticle/nibr-bot13-rds-audit-logging.git'  //TFT REPO
             }
         }
         stage('Terraform Init') {
