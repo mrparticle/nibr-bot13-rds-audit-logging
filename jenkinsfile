@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+
+    //ACTIONS
+    parameters { 
+      choice(name: 'ACTION', choices: ['HGB Test - TF Plan', 'HGB Test - TF Apply', 'HGB Test - TF Destroy', 'NBS Test - TF Plan', 'NBS Test - TF Apply', 'NBS Test - TF Destroy'], description: 'Select action')
+    }
+
+    stages {
+        stage('Git Checkout') {
+            steps {
+                git branch: 'main', credentialsId: '1af469b8-2c75-4ca8-a80a-80f7488cf32a', url: 'https://github.com/mrparticle/Breadcrumbsnibr-bot13-rds-audit-logging.git'  //TFT REPO
+            }
+        }
+        stage('Terraform Init') {
+            steps {
+                bat 'terraform init'
+            }
+        }
+       stage('Terraform Plan/Apply/Destroy') {
+            steps {
+                        script{  
+                    if (params.ACTION == "HGB Test - TF Plan") //ACTION
+                    withAWS(credentials: 'hgbridge-admin-creds', region: 'eu-west-2'){ //CREDENTIALS
+                            bat 'terraform plan' //sh
+                    }
+                    if (params.ACTION == "HGB Test - TF Apply") //ACTION
+                    withAWS(credentials: 'hgbridge-admin-creds', region: 'eu-west-2'){ //CREDENTIALS
+                            bat 'terraform apply -refresh=true -auto-approve' //sh
+                    }
+                    if (params.ACTION == "HGB Test - TF Destroy") //ACTION
+                    withAWS(credentials: 'hgbridge-admin-creds', region: 'eu-west-2'){ //CREDENTIALS
+                            bat 'terraform destroy -auto-approve' //sh
+                    }
+                    if (params.ACTION == "NBS Test - TF Plan") //ACTION
+                    withAWS(credentials: 'NBS Test', region: 'eu-west-2'){ //CREDENTIALS
+                            bat 'terraform plan' //sh
+                    }
+                    if (params.ACTION == "NBS Test - TF Apply") //ACTION
+                    withAWS(credentials: 'NBS Test', region: 'eu-west-2'){ //CREDENTIALS
+                            bat 'terraform apply -refresh=true -auto-approve' //sh
+                    }
+                    if (params.ACTION == "NBS Test - TF Destroy") //ACTION
+                    withAWS(credentials: 'NBS Test', region: 'eu-west-2'){ //CREDENTIALS
+                            bat 'terraform destroy -auto-approve' //sh
+                    }
+                }
+            } 
+        }
+    }
+}
